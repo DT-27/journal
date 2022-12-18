@@ -31,6 +31,7 @@
   "main": "project.js",
   "scripts": {
     "start": "node project.js",
+    "dev": "nodemon project.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
