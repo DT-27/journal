@@ -1,0 +1,129 @@
+
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Dairy__ Homepage </title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Rubik Bubbles">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css ">
+
+  </head>
+  <body style="background-color:#e5e5e5; font-family:Rubik Bubbles;">
+    <style media="screen">
+       @media only screen and (min-width:992px) and (max-width:1158px){
+        .navbar{
+          font-size:12px;
+        }
+       }
+      .content{
+         width:500px;
+         white-space:nowrap;
+         overflow:hidden;
+        text-overflow:hidden;
+         font-size:17px;
+      }
+      .title{
+        font-size:1.5rem;
+      }
+@media only screen and (max-width:1000px){
+  .date{
+    font-size:14px;
+  }
+  .title{
+    font-size:1.5rem;
+  }
+         .content{
+           font-size:100%;
+           width:250px;
+           white-space:nowrap;
+           overflow:hidden;
+           text-overflow:hidden;
+         }
+       }
+    </style>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#"><h2>Diary</h2></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" style="margin-left:50%; word-spacing:30px;" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+
+      <a class="nav-item nav-link active" href="/home"><i class="fa-solid fa-house-chimney"></i>Home <span class="sr-only">(current)</span></a>
+        <form action="mailto:d.t.thedeveloper@gmail.com" style="margin-right:2rem;">
+
+        <input type="submit" value="feedback ?" class="nav-item nav-link"  style=" border:none; background:none;" >
+        </form>
+            <a href="#" onclick="myFunction()"  class="nav-item nav-link"  style=" border:none; background:none;" > Appointments</a>
+          <!--  <a type="date" href="#"  class="nav-item nav-link Calender"  style=""><i class="fa-solid fa-calendar-days"></i>Calender</a>-->
+        <!--
+
+        <a class="nav-item nav-link" href="/stared"><i class="fa-solid fa-star"></i>Stared</a>
+          <a class="nav-item nav-link"  href="/recyclebin"><i class="fa-solid fa-trash"></i></i>Recycle.bin</a> -->
+
+        <a class="nav-item nav-link" href="/logOut"><i class="fa-solid fa-star"></i>LogOut</a>
+    </div>
+  </nav>
+<h2 style="margin-top:auto; margin-left:auto; letter-spacing:1px; ">Welcome,<em style="font-size:2rem;"><%= name.username %></em></h2>
+<span style="font-size:2rem; margin-bottom:3%; margin-left:92%; position:relative;" type="submit" name="button" ><a href="/type/<%= name.id %>" style="text-decoration:none; color:#ffff; "><i style="color:black; " class="fa-solid fa-pen-to-square"></i> </a></span>
+<div>
+<% creator.forEach((data)=>{ %>
+
+
+  <div style="padding:10px 11% 6px; border:1px solid black; background-color:#212529; border-radius:20px; margin:0% 10% 3% 10%; color:#e5e5e5; height:150px;">
+    <span style="float:right; display:grid; margin-right:-40px;  padding-top:2%;">
+
+      <button type="button" name="button"  style="border:none;  margin-bottom:10px; background-color:#212529; font-size:20px;" ><a href="/diary/edit/<%=data.id %>" style="color:black; text-decoration:none;" class= "fa-solid fa-pen"></a> </button>
+  <form  style="color:black; margin-top:10px; text-decoration:none;"  action="/diary/delete/<%= data.id %>?_method=DELETE" method="post">
+         <input type="hidden" name="_method" value="DELETE">
+         <input type="submit" class="fa-solid fa-trash"  value="D" style="border:none; font-size:23px; font-family:Rubik Bubbles;background:none;">
+      </form>
+    </span>
+    <div style="margin-bottom:10px;">
+<span class="title"><%- data.title %> - </span> <span class="date"><%= data.date  %></span>
+</div>
+<div style="display:flex; margin-bottom:-200px;" class="content">
+<p  style=" margin-top:5%; margin-left:-63%; display:block;"><%- data.content %> </p>
+
+</div>
+<a href="/journal/<%= data.id %> ">
+<div style="margin-left:40px; margin-top:200px;" >
+ >>
+</div>
+ </a>
+</div>
+
+
+ <%}); %>
+
+</div>
+
+
+
+
+
+        <script>
+
+        if ( window.history.replaceState ) {
+          window.history.replaceState( {},"home", window.location.href );
+
+        };
+        function myFunction() {
+          alert("Sorry! this feature is not available yet");
+        }
+
+        </script>
+
+  </body>
+
+
+</html>

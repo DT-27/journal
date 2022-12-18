@@ -1,0 +1,222 @@
+//home page code
+<h2 style="margin-top:auto; margin-left:auto; letter-spacing:1px; ">Welcome,<em style="font-size:2rem;"><%= name.username %></em></h2><br>
+<div>
+<!--<% data.forEach((data)=>{ %> -->
+<ul>
+
+
+
+  <li style="padding:10px 11% 2px; border:1px solid black; background-color:#212529; border-radius:20px; height:50%;color:#e5e5e5; margin:3% 10% 0px 10%;">
+    <span style="float:right; display:grid; margin-right:-40px; padding-top:2%;">
+
+      <button type="button" name="button"  style="border:none; background-color:#212529; font-size:20px;" ><!--<a href="/diary/stared/<%= data.id %>" class="fa-solid fa-star" style="color:black; text-decoration:none;"  ></a>--> </button><br>
+
+      <button type="button" name="button"  style="border:none; margin-top:-10px; margin-bottom:10px; background-color:#212529; font-size:20px;" ><!--<a href="/diary/edit/<%= data.id %>" style="color:black; text-decoration:none;" class= "fa-solid fa-pen"></a>--> </button>
+    <!--  <form  style="color:black; text-decoration:none;" class="fa-solid fa-trash" action="/diary/recyclebin/<%= data.id %>?_method=DELETE" method="post">
+         <input type="hidden" name="_method" value="DELETE">
+         <input type="submit"  value="D" style="border:none; background-color:#212529; font-size:20px;">
+      </form> -->
+    </span>
+<span style="font-size:2rem;"><!--<%= data.title %> -->- </span> <span style=" font-size:1rem;"><%= moment().format('Do MMMM, YYYY')  %></span>
+<p style=" margin-top:2%;"><!--<%= data.content.substring(0, 200) %> ... --> </p>
+
+
+
+
+  <a href="/journal/<%= data.id %> "> >> </a>
+</li><br>
+
+
+<!--  <%}); %> -->
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const LocalStrategy = require('passport-local').Strategy
+const bcrypt = require('bcrypt');
+const Diary = require("./UserInfo/Info");
+
+const Info = require("./UserInfo/TcInfo");
+
+
+function initialize(passport, getUserByEmail, getUserById) {
+  const authenticateUser = async (email, password, done) => {
+    const user = getUserByEmail(email)
+    if (user == null) {
+      return done(null, false, { message: 'No user with that email' })
+    }
+
+    try {
+      if (await bcrypt.compare(password, user.password)) {
+        return done(null, user)
+      } else {
+        return done(null, false, { message: 'Password incorrect' })
+      }
+    } catch (e) {
+      return done(e)
+    }
+  }
+
+  passport.use(new LocalStrategy({ usernameField: 'email' }, authenticateUser))
+  passport.serializeUser((user, done) => done(null, user.id))
+  passport.deserializeUser((id, done) => {
+    return done(null, getUserById(id))
+  })
+}
+
+module.exports = initialize
+
+
+
+
+const session= require ("express-session");
+
+
+app.use(
+  session({
+    secret: 'Your daily life',
+    resave: true,
+    saveUninitialized: true
+  })
+);
+
+
+
+data.forEach((Data)=>{
+  });
+
+
+
+
+
+
+
+
+passport.use(Journal.createStrategy());
+
+
+
+
+
+
+passport.serializeUser(Journal.serializeUser());
+passport.deserializeUser(Journal.deserializeUser());
+diarySchema.plugin(passportLocalMongoose);
+
+
+
+
+
+
+app.get("/",function(req, res) {
+  res.render("signin")
+});
+
+
+
+
+
+
+app.post("/home",(req,res)=>{
+  const Data = new Diary({
+    Username:req.body.Username,
+    email:req.body.email,
+    password:req.body.password
+  })
+   D.save();
+
+   res.render("home",{data:Data});
+});
+\
+
+
+
+
+
+app.post("/diary", async(req,res)=> {
+  const hashedpwd= await bcrypt.hash(req.body.password,saltRounds);
+
+   var User= new diary({
+
+   name:req.body.name,
+   email:req.body.email,
+    password:hashedpwd,
+
+  });
+  User.save();
+
+    diary.find().then(data =>{
+    res.render("home",{data:data});
+    }).catch(err=>console.log(err));
+
+
+
+});
+
+
+
+app.get("/login",function (req,res) {
+  res.render("login")
+
+});
+app.post("/log", function(req, res) {
+
+  const user = new diary({
+    name: req.body.name,
+    password: req.body.password
+  });
+
+  req.login(user, function(err){
+    if (err){
+      console.log(err);
+    } else {
+      passport.authenticate("local")(req, res, function(){
+        res.redirect("/home");
+      });
+    }
+  });
+});

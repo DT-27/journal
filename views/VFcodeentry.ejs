@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>reset password</title>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" crossorigin="anonymous"></script>
+
+  </head>
+  <style media="screen">
+  #partitioned {
+padding-left: 15px;
+letter-spacing: 42px;
+border: 0;
+background-image: linear-gradient(to left, black 70%, rgba(255, 255, 255, 0) 0%);
+background-position: bottom;
+background-size: 50px 1px;
+background-repeat: repeat-x;
+background-position-x: 35px;
+width: 270px;
+min-width: 210px;
+margin-left:2%;
+background-color:  #e5e5e5;
+}
+  #partitioned:focus{
+    outline:none;
+    background-color:  #e5e5e4;
+
+  }
+
+#divInner{
+left: 0;
+position: sticky;
+}
+
+#divOuter{
+  height:70px;
+width: 250px;
+overflow: hidden;
+margin-left: auto;
+margin-right: auto;
+margin-top:4%;
+background-color:#e5e5e5;
+color: #e5e5e5;
+  border:none;
+}
+
+
+  </style>
+<body style="background-color:#e5e5e5; font-family:Rubik bubbles;">
+  <h1 style="text-align:center; margin-top:15%">OTP </h1>
+
+
+<!--
+  <div class="container height-100 d-flex justify-content-center align-items-center" style="width:40%;"> <div class="position-relative"> <div class="card p-2 text-center">  <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2"> <input class="m-2 text-center form-control rounded" type="text" id="first" maxlength="1" /> <input class="m-2 text-center form-control rounded" type="text" id="second" maxlength="1" /> <input class="m-2 text-center form-control rounded" type="text" id="third" maxlength="1" /> <input class="m-2 text-center form-control rounded" type="text" id="fourth" maxlength="1" /> <input class="m-2 text-center form-control rounded" type="text" id="fifth" maxlength="1" /> <input class="m-2 text-center form-control rounded" type="text" id="sixth" maxlength="1" /> </div> <div class="mt-4"> <button class="btn btn-danger px-4 validate" style=" border:none; margin-bottom:20px; padding:10px auto auto 10px; background-color:black;">Validate</button> </div> </div> <div class="card-2"> <div class="content d-flex justify-content-center align-items-center" style="margin-top:15px;"> <span>Didn't get the code</span> <a href="#" class="text-decoration-none ms-3">Resend(1/3)</a> </div> </div> </div  </div>
+
+
+  <div class="input-group mb-3" style="width:50%; margin-left:25%;">
+
+<div class="input-group mb-3" style="width:60%; margin-left:20%">
+  <input type="number" class="form-control" placeholder="enter code" aria-label="OTP code" aria-describedby="basic-addon2" style="color:black; height:39px;" maxlength="5" name ="number"/>
+  <div class="input-group-append">
+  </div>
+</div>
+
+-->
+ <form class="code" action="/optcode" method="post" >
+
+<div id="divOuter">
+    <div id="divInner">
+        <input id="partitioned" type="text" maxlength="5" name="number" />
+    </div>
+</div>
+<button type="submit" class="btn btn-danger px-4 validate" style=" border:none;margin-left:46.8%;
+   margin-bottom:20px; padding:10px auto auto 10px; background-color:black;">send</button>
+
+</form>
+<p class="mb-5 pb-lg-2" style="margin-left:auto; margin-right: auto;
+color: #393f81; text-align:center;"><a href="/resend"
+    style="color: #393f81; ">Resend code</a></p>
+
+    <script type="text/javascript">
+
+    var obj = document.getElementById('partitioned');
+obj.addEventListener('keydown', stopCarret);
+obj.addEventListener('keyup', stopCarret);
+
+function stopCarret() {
+  if (obj.value.length > 4){
+      setCaretPosition(obj, 4);
+  }
+}
+
+function setCaretPosition(elem, caretPos) {
+  if(elem != null) {
+      if(elem.createTextRange) {
+          var range = elem.createTextRange();
+          range.move('character', caretPos);
+          range.select();
+      }
+      else {
+          if(elem.selectionStart) {
+              elem.focus();
+              elem.setSelectionRange(caretPos, caretPos);
+          }
+          else
+              elem.focus();
+      }
+  }
+}
+
+    </script>
+
+  </body>
+</html>

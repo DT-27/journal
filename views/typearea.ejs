@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Diary__Typearea</title>
+
+      <!-- CSS only -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+  <!-- JavaScript Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Rubik Bubbles">
+  </head>
+  <body style="background-color:#e5e5e5; font-family:Rubik bubbles;">
+    <h1 style="margin-left:20px; margin-top:5px;">Text area</h1>
+    <br>
+
+
+
+    <form action="/backtodiary/<%= data.id %>?_method=PUT" method="post">
+      <input type="hidden" name="_method" value="PUT">
+    <div>
+
+
+    <div class="input-group input-group-lg">
+
+      <input placeholder="Enter short title" name="title" style="text-align:center; font-weight:bold; border:0px;" type="text" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+    </div>
+    <div class="form-group">
+
+      <textarea class="form-control" id="froala-editor" name="content"></textarea>
+    </div>
+
+
+    </div>
+
+
+  <input type="submit" value="Save" class="btn btn-dark btn-lg active" style="margin-top:4px; margin-left:8px">
+  </form>
+
+
+  <!-- Include Editor style. -->
+  <link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+
+  <!-- Include Editor JS files. -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"></script>
+
+  <!-- Initialize the editor. -->
+  <script>
+  new FroalaEditor('textarea#froala-editor', {
+  heightMin: 450,
+  heightMax:600
+})
+
+  </script>
+
+
+  </body>
+</html>
