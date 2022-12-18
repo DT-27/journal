@@ -414,7 +414,7 @@ app.post("/forgotpassword",(req,res)=>{
         res.render("forgotpassword",{error:req.flash("error"),otperror:req.flash("otperror")});
     }
   })
-      console.log(random);
+  
 });
 
 
@@ -468,7 +468,7 @@ app.get("/resend",(req,res)=>{
                 cid:"for@email.tt"
               }]
      }
-        console.log(mail);
+
         console.log(mailOptions.text)
 
    transporter.sendMail(mailOptions, function (error, info) {
