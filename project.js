@@ -28,6 +28,8 @@ const favicon                 = require('serve-favicon');
               const app = express();
 
 // connecting to database
+mongoose.set("strictQuery", false);
+
 mongoose.connect("mongodb://localhost:27017/diary",
 {
   useNewUrlParser:true,
