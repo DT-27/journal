@@ -414,7 +414,7 @@ app.post("/forgotpassword",(req,res)=>{
         res.render("forgotpassword",{error:req.flash("error"),otperror:req.flash("otperror")});
     }
   })
-  
+
 });
 
 
@@ -539,7 +539,7 @@ if (pass1== pass2) {
 
 
 
-  const server = app.listen(process.env.PORT || 5000, () => {
+  const server = app.listen(process.env.PORT || 3000, () => {
     const port = server.address().port;
     console.log(`Express is working on port ${port}`);
   });
