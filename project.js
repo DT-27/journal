@@ -60,7 +60,7 @@ prompt.start();
  //express sessions
 
 app.use(session({
-  secret:process.env.SESSION_SECRET,
+  secret:"dailyactivity/life.'diary'",
   resave: false,
   saveUninitialized: true}));
 
