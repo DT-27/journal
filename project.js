@@ -18,56 +18,73 @@ const passport                = require ("passport");
 const passportLocalMongoose   = require ("passport-local-mongoose");
 const methodOverride          = require("method-override");
 const flash                   = require('connect-flash');
-const prompt                  = require("prompt");
 const crypto                  = require("crypto");
 const async                   = require('async');
 const nodemailer              = require("nodemailer");
+const smtpTransport           = require("nodemailer-smtp-transport");
 const favicon                 = require('serve-favicon');
+const _                       = require("lodash");
+const readline                = require("readline-sync");
+const prompt                  = require('prompt');
+const dotenv                  = require ('dotenv');
+
+
+
 
 
               const app = express();
 
-// connecting to database
+              //using middleware
+
+     app.set("views", __dirname + "/views");
+
+     app.use(express.urlencoded({ extended: false }));
+
+     app.set("view engine","ejs");
+
+     app.use(express.static(__dirname + 'startbootstrap-business-frontpage-master/dist/css/'));
+
+     prompt.start();
+
+     app.use(methodOverride('_method'))
+
+          const saltRounds = 10;
+
+          app.use(flash());
+
+    app.use(favicon(__dirname + '/favicon.ico'));
+
+         prompt.start();
+
+        //express sessions
+
+     app.use(session({
+       secret:process.env.SESSION_SECRET,
+         resave: false,
+          saveUninitialized: true}));
+
+
+          const dbPassword = process.env.PASSWORD;
+
+
+
+
+// connecting to da v--ptabase
 mongoose.set("strictQuery", false);
 
-mongoose.connect("mongodb://localhost:27017/diary",
-{
-  useNewUrlParser:true,
-  useUnifiedTopology:true
+mongoose.connect(`mongodb+srv://DT:${dbPassword}@cluster0.rlculrx.mongodb.net/`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+  .then(() => {
+    console.log("Database is working properly");
+  })
+  .catch(err => {
+    console.error("Error connecting to the database:", err);
+  });
 
-}).then(console.log("Database is working properly"))
-.catch(err => console.log(err));
 
 const Diary = require("./UserInfo/Info")
-
-
-//using middleware
-
-app.set("view engine","ejs");
-
-app.set("views", __dirname + "/views");
-
-app.use(express.static("public"));
-
-app.use(methodOverride('_method'))
-
-const saltRounds = 10;
-
-app.use(flash());
-
-app.use(favicon(__dirname + '/favicon.ico'));
-
-prompt.start();
-
- //express sessions
-
-app.use(session({
-  secret:"dailyactivity/life.'diary'",
-  resave: false,
-  saveUninitialized: true}));
-
-  //bodyparser
-app.use(express.urlencoded({ extended: false }));
 
 
 //passport
@@ -104,7 +121,7 @@ passport.use(new LocalStrategy({usernameField:"email"},function (email, password
 
 
 // login page
-app.get('/', (req, res) => res.render('login',{display:req.flash("display")}));
+app.get('/', (req, res) => res.sendFile('views/index.html' , { root : __dirname}));
 
 
 //signin page
@@ -140,7 +157,7 @@ app.get("/backtosign",function (req,res) {
                     'message',
                     'You are now registered and can log in'
                   );
-                    res.redirect("login")
+                  res.render('login',{display:req.flash("display")});
                 //  res.render("home",{name:Data,creator:Data.creator})
 
             })  .catch(err => console.log(err));
@@ -168,12 +185,185 @@ app.post('/log',
 
 
 
-//rendering typearea page
-app.get("/type/:id",(req,res)=>{
 
-  Diary.findOne({
+
+
+
+
+//add categories
+app.post("/catego/:id",(req,res)=>{
+
+     let catName = req.body.category;
+     Diary.findOne({_id:req.params.id}).then(cat=>{
+       cat.Categories.push({
+        newCategory:catName
+       });
+       cat.save();
+       console.log(cat.Categories);
+
+       res.render("home",{name:cat,category:cat.Categories})
+
+
+})
+});
+
+//delete category
+app.post("/delcat/:id",(req,res)=>{
+  let query ={_id:req.user.id};
+
+  Diary.findOneAndUpdate(query,
+    {$pull:{Categories:{_id:req.params.id}}})
+    .then(data=>{
+      res.render("home",
+      {
+        name:data,
+        creator:data.creator,
+        category:data.Categories
+      })
+    })
+  });
+
+  app.get("/delcat/:id",(req,res)=>{
+    Diary.findOne({_id:req.user.id}).then(data=>{
+      res.render("home",
+      {
+        name:data,
+        creator:data.creator,
+        category:data.Categories
+      })
+    })
+  });
+
+  let catid;
+
+
+// get catItem
+app.get("/catItem/:id", async(req,res)=>{
+  console.log(req.params.id+"sigma");
+
+
+   catid=req.params.id;
+
+     Diary.findById(req.user.id).then(data=>{
+
+       console.log(data)
+
+           res.render("category",{name:data,tit:data.Categories,id:req.params.id});
+
+
+ }).catch(err=> console.log(err));
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//todolist
+app.get("/todo/:id",(req,res)=>{
+  Diary.findOne({_id:req.params.id}).then(list=>{
+    const something = list.Todolist.push({
+      name:"Welcome to your todolist! "
+    })
+    res.render("todolist",
+    {
+
+      TodoTitle:"Today",
+      id:req.params.id,
+      Newlist:list.Todolist
+
+  });
+
+  })
+
+});
+//adding content to todolist
+app.post("/add/:id",(req,res)=>{
+  console.log(req.body.newItem);
+  let info =  req.body.newItem;
+
+    Diary.findOne({_id:req.params.id}).then(add=>{
+      if (info.length > 0) {
+       add.Todolist.push({
+        name:req.body.newItem
+       });
+       add.save();
+console.log(add.Todolist)
+
+      res.render("todolist",{
+        TodoTitle:"Today",
+        id:req.params.id,
+        Newlist:add.Todolist
+
+      })
+    }else{
+      res.render("todolist",{
+        TodoTitle:"Today",
+        id:req.params.id,
+        Newlist:add.Todolist
+
+      })
+    }
+    })
+
+
+});
+
+//checking out items from todolist
+app.post("/delete/:id",(req,res)=>{
+  console.log(req.params.id)
+  console.log(req.body.checkbox)
+  let query ={_id:req.params.id}
+  let info = Diary.findOneAndUpdate(query,
+    {$pull:{Todolist:{_id:req.body.checkbox}}}).then(box=>{
+
+      res.render("todolist",{
+        TodoTitle:"Today",
+        id:req.params.id,
+        Newlist:box.Todolist
+
+});
+
+
+})
+   });
+
+//deleting from todolist
+app.get("/delete/:id",(req,res)=>{
+  Diary.findOne({_id:req.params.id}).then(boc=>{
+    res.render("todolist",{
+      TodoTitle:"Today",
+      id:req.params.id,
+      Newlist:boc.Todolist
+
+  })
+  })
+
+});
+
+
+
+
+//rendering typearea page
+app.get("/type/:id",async(req, res)=>{
+
+  await Diary.findOne({
     _id:req.params.id
-  }).then(data =>{
+  }).then(async(data) =>{
      console.log(data.id);
        res.render("typearea",{data:data})
    }).catch(err=>console.log(err))
@@ -181,21 +371,49 @@ app.get("/type/:id",(req,res)=>{
 });
 
 
+
+
+
+
+
+
+
+
 //posting/pushing typearea content
-app.put('/backtodiary/:id', (req, res) => {
+app.put('/backtodiary/:id', async(req, res) => {
+    let category_id =catid;
+   let tit = await Diary.findById(req.user.id);
 
-    Diary.findById(req.params.id)
-      .then(function (info) {
-         info.creator.push({
-            title:req.body.title,
-              content:req.body.content
+    await Diary.updateMany({
+          _id:req.params.id,
+          'Categories._id':category_id
+        },
+        {"$push":{
+          "Categories.$.CatContent":{
+            "title":req.body.title,
+            "content":req.body.content
+          }
+        }}
+        ).then(async(data)=>{
+
+          await res.render("category",{name:data,tit:tit.Categories,id:category_id});
         })
-                    info.save();
 
-                    res.render("home",{name:info,creator:info.creator})
-              }).catch(err=> console.log(err))
+     });
+
+
+
+
+  // rendering categories page after typing content
+  app.get("/backtodiary/:id",function(req,res){
+    let category_id =catid;
+     Diary.findById(req.user.id).then(tit=>{
+      res.render("category",{name:tit,tit:tit.Categories,id:category_id});
+     });
+
 
   });
+
 
 
 
@@ -204,39 +422,33 @@ app.put('/backtodiary/:id', (req, res) => {
 
       console.log(req.user.id);
         let user = await Diary.findById(req.user.id);
-          res.render("home",{name:user,creator:user.creator})
+        res.render("home",{name:user,creator:user.creator,category:user.Categories})
 
     });
 
-
-    // rendering home page after typing content
-  app.get("/backtodiary/:id",function(req,res){
-
-   Diary.findById(req.params.id).then((data)=>{
-  console.log(data.creator);
-    res.render("home",{name:data,creator:data.creator})
-       }).catch(err=>console.log(err))
-
-  });
 
 
 
 //View/read
 app.get("/journal/:id",(req,res)=>{
 
-   Diary.findById(req.user.id).then(data=>{
-     res.render("page",{data:data,creator:data.creator,id:req.params.id})
-  }).catch(err=> console.log(err))
+  Diary.findById(req.user.id).then(data=>{
+    let segment = data.Categories.find(x => x.id === catid);
+
+  res.render("page",{data:data,creator:segment,id:req.params.id,catid:catid})
+}).catch(err=> console.log(err))
 
 });
 
 
 
 //edit page get request
-app.get("/diary/edit/:id" ,async(req,res)=>{
+app.get("/journal/edit/:id",async(req,res)=>{
 
  Diary.findById(req.user.id).then(data=>{
-        res.render("edit",{data:data,creator:data.creator,id:req.params.id})
+          let segment = data.Categories.find(x => x.id === catid);
+          console.log("wait o"+segment+"welldone jesus");
+        res.render("edit",{data:data,creator:segment,id:req.params.id,catid:catid})
   }).catch(err=> console.log(err))
 
 });
@@ -245,8 +457,10 @@ app.get("/diary/edit/:id" ,async(req,res)=>{
 //edit page get request when in page
 app.get("/edit/:id", async (req,res)=>{
 
-  let render = await Diary.findById(req.user.id);
-   res.render("home",{name:render,creator:render.creator})
+  await Diary.findById(req.user.id).then(tit=>{
+    res.render("category",{name:tit,tit:tit.Categories,id:catid});
+
+  })
 
 });
 
@@ -254,35 +468,47 @@ app.get("/edit/:id", async (req,res)=>{
 //editing user content
 app.put('/edit/:id',async (req,res)=>{
 
-     Diary.updateMany(
-       {
-          "creator._id":req.params.id
-      },
-      {
-       "$set":{
-          "creator.$.title": req.body.newtitle,
-          "creator.$.content":req.body.newcontent
-       }
-     }
-   ).then(data=>{
-        console.log(data);
-   });
-      let render = await Diary.findById(req.user.id);
-       res.render("home",{name:render,creator:render.creator});
+ let tit = await Diary.findById(req.user.id);
+ Diary.findOneAndUpdate(
+  {
+    _id: req.user.id,
+    "Categories._id": catid
+  },
+  {
+    $set: { "Categories.$.CatContent.$[v].title": req.body.newtitle,
+            "Categories.$.CatContent.$[v].content": req.body.newcontent,
+  }
+  },
+  {
+    arrayFilters: [{ "v._id": req.params.id }],
+    upsert: true,
+    new: true
+  }
+).then(data=>{
+  res.render("category",{name:tit,tit:tit.Categories,id:catid});
+})
 
 });
 
 
 
 // deleting content
-app.delete("/diary/delete/:id",(req,res)=>{
-  console.log(req.params.id);
+app.delete("/diary/delete/:id",async(req,res)=>{
+  console.log(req.params.id +"a differnt id");
+  let tit = await Diary.findById(req.user.id);
 
    let query ={_id:req.user.id}
-    let info = Diary.findOneAndUpdate(query,
-      {$pull:{creator:{_id:req.params.id}}}).then(info=>{
+    let info = Diary.findOneAndUpdate({
+      _id:req.user.id,
+      'Categories._id':catid,
+    },
+      {$pull:{
+        "Categories.$.CatContent":{
+         _id:req.params.id
+        }
+      }}).then(info=>{
 
-  res.render("home",{name:info,creator:info.creator})
+        res.render("category",{name:tit,tit:tit.Categories,id:catid});
 
   });
 });
@@ -291,10 +517,11 @@ app.delete("/diary/delete/:id",(req,res)=>{
    // rendering home after deleting
 app.get("/diary/delete/:id",(req,res)=>{
 
-   Diary.findById(req.user.id).then((data)=>{
-      console.log(data.creator);
-        res.render("home",{name:data,creator:data.creator})
-   }).catch(err=>console.log(err))
+  let category_id =catid;
+  Diary.findById(req.user.id).then(tit=>{
+   res.render("category",{name:tit,tit:tit.Categories,id:category_id});
+  });
+
 
 });
 
@@ -366,18 +593,21 @@ app.post("/forgotpassword",(req,res)=>{
 
       Diary.findOne({ email: mail }).then(forgot => {
   if (forgot) {
-    let transporter = nodemailer.createTransport({
-       service: 'gmail',//smtp.gmail.com  //in place of service use host...
-        secure: false,//true
-          port: 25,//465
-           auth: {
-               user: process.env.MyEmail,
+    let transporter = nodemailer.createTransport(smtpTransport({
+          sendmail: true,
+          host: "smtp.gmail.com",
+          port: 587,
+          secure:false,
+          auth: {
+               user:"d.t.thedeveloper@gmail.com",
               pass:process.env.emailPass
              },
+             debug: true,
+             logger: true,
              tls: {
                   rejectUnauthorized: false
                 }
-     })
+     }))
 
      ejs.renderFile("./views/reset_code.ejs",{crypto:random}, function(err, data){
            if(err){
@@ -385,7 +615,7 @@ app.post("/forgotpassword",(req,res)=>{
            }else {
 
            let mailOptions = {
-               from: 'd.t.thedeveloper@gmail.com',
+               from: process.env.email,
                to:mail,
                subject: 'OTP code',
                text:"this is a forgot password reset code",
@@ -440,17 +670,21 @@ app.post("/optcode",(req,res)=>{
   // resending OTP code
 app.get("/resend",(req,res)=>{
 
-  let transporter = nodemailer.createTransport({
-     service: 'gmail',
-   secure: false,
-   port: 25,
-   auth: {
-     user: process.env.MyEmail,
-     pass: process.env.emailPass
-   }, tls: {
+  let transporter = nodemailer.createTransport(smtpTransport({
+    sendmail: true,
+    host: "smtp.gmail.com",
+    port: 587,
+    secure:false,
+    auth: {
+         user:"d.t.thedeveloper@gmail.com",
+        pass:process.env.emailPass
+       },
+     debug: true,
+     logger: true,
+  tls: {
      rejectUnauthorized: false
     }
- })
+ }))
 
 
  ejs.renderFile("./views/reset_code.ejs",{crypto:random}, function(err, data){
@@ -459,7 +693,7 @@ app.get("/resend",(req,res)=>{
          }else {
 
        let mailOptions = {
-           from: 'd.t.thedeveloper@gmail.com',
+           from: '"Your Journal - OTP" <_mainaccount@thejournal.top>',
            to:mail,
            subject: 'OTP code',
            text:"this is a forgot password reset code",
@@ -520,6 +754,16 @@ if (pass1== pass2) {
 
  });
 
+//delete account
+app.get("/delacc",(req,res)=>{
+     console.log(req.user.id);
+ Diary.deleteMany({_id:req.user.id}).then(is=>{
+      res.render("signin",{message:req.flash("message")})
+ }
+
+ )
+
+})
 
 
 

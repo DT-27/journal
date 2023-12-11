@@ -1069,3 +1069,61 @@ function checkNotAuthenticated(req, res, next) {
 app.listen(5000,function() {
   console.log("server working properly")
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <% creator.forEach((data)=>{ %>
+       
+       
+         <div class="hov">
+           <span style="float:right; display:grid; margin-right:-30px;  padding-top:2%;">
+       
+             <button type="button" name="button" class="edit"  ><a title="edit" href="/journal/edit/<%=data.id %>" class= "fa-solid fa-pen"></a> </button>
+         <form  class="delete"  action="/diary/delete/<%= data.id %>?_method=DELETE" method="post">
+                <input type="hidden" name="_method" value="DELETE">
+                <input title="delete"  type="submit" class="fa-solid fa-trash"  value="D">
+             </form> <br>
+       
+             <a title="read" href="/journal/<%= data.id %> "  class="smallview">
+                    >>
+       
+             </a>
+           </span>
+           <div style="margin-bottom:10px;">
+       <span  class="title"><%- data.title %> - </span> <span class="date"><%= data.date  %></span>
+       </div>
+       <div class="content">
+       <p class="contenttxt"><%- data.content %> </p>
+       
+       </div>
+       <a href="/journal/<%= data.id %> " >
+       <div title="Read"  class="read">
+              >>
+       </div>
+       
+       </a>
+       </div>
+       
+       
+        <%}); %>
+       
+
+
+
+

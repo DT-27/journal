@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="viewport" content="width=device-width">
     <title>Diary__Typearea</title>
 
       <!-- CSS only -->
@@ -12,6 +12,10 @@
     href="https://fonts.googleapis.com/css?family=Rubik Bubbles">
   </head>
   <body style="background-color:#e5e5e5; font-family:Rubik bubbles;">
+<style media="screen">
+.ck-editor__editable {min-height: 450px;}
+
+</style>
     <h1 style="margin-left:20px; margin-top:5px;">Text area</h1>
     <br>
 
@@ -24,33 +28,37 @@
 
     <div class="input-group input-group-lg">
 
-      <input placeholder="Enter short title" name="title" style="text-align:center; font-weight:bold; border:0px;" type="text" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+      <input placeholder="Enter short title" name="title" style="text-align:center; font-weight:bold; border:0px;" type="text" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm" autocomplete="off" >
     </div>
     <div class="form-group">
-
-      <textarea class="form-control" id="froala-editor" name="content"></textarea>
-    </div>
-
-
+      <textarea class="form-control" id="editor" name="content"></textarea>
     </div>
 
 
   <input type="submit" value="Save" class="btn btn-dark btn-lg active" style="margin-top:4px; margin-left:8px">
   </form>
 
+<script type="text/javascript" src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
+<script>
+ClassicEditor.create( document.querySelector( '#editor') ).then( editor => {
+        editor.ui.view.editable.element.style.height = '450px';
+    }).catch( error => {
+            console.error( error );
+        } );
+</script>
 
-  <!-- Include Editor style. -->
+  <!-- Include Editor style.
   <link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
 
-  <!-- Include Editor JS files. -->
+   Include Editor JS files.
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"></script>
 
-  <!-- Initialize the editor. -->
+   Initialize the editor.
   <script>
   new FroalaEditor('textarea#froala-editor', {
   heightMin: 450,
   heightMax:600
-})
+})-->
 
   </script>
 

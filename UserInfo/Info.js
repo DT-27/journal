@@ -4,14 +4,15 @@ const passportLocalMongoose   = require ("passport-local-mongoose");
 
 //creating schemas
 
+//For content and title
 const infoSchema = new mongoose.Schema({
 
   title:{
-    type:String
+    type:mongoose.Mixed
 
   },
   content:{
-    type:String
+    type:mongoose.Mixed
   },
    date:  {
      type: Date,
@@ -20,9 +21,29 @@ const infoSchema = new mongoose.Schema({
    }
 
 });
+//For categories
+ const CategorieSchema = new mongoose.Schema({
+  newCategory:{
+    type:mongoose.Mixed
+  },
+   date:  {
+     type: Date,
+     default: Date.now,
+      get: (date)=> date.toLocaleDateString("en-US")
+   },
+  CatContent:[ infoSchema ]
+ })
 
 
+//for todolist
+const itemsSchema = new mongoose.Schema ({
+  name:{
+    type:mongoose.Mixed
+  }
+});
 
+
+//Signing and imbeded database
 const diarySchema = new mongoose.Schema({
   username:{
     type:mongoose.Mixed
@@ -33,9 +54,13 @@ const diarySchema = new mongoose.Schema({
   password:{
     type:mongoose.Mixed
   },
-  creator:[infoSchema]
+
+  Todolist:[itemsSchema],
+
+  Categories:[CategorieSchema]
 
 });
+
 diarySchema.plugin(passportLocalMongoose);
 
 const Diary = mongoose.model("diary",diarySchema);

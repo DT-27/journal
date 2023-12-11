@@ -16,8 +16,8 @@
   </head>
 <body style="background-color:#e5e5e5; font-family:Rubik bubbles; text-align:center;">
     <h1 style="width:100%; background-color:black;  color:white; margin-top:-3px; height:70px; text-align:left;">View</h1><br>
-     <h2 style=" text-decoration:underline;"> <%- creator.find(x => x.id === id).title %></h2> <br>
-  <p style="font-size:20px;">   <%- creator.find(x => x.id === id).content %> </p>
+     <h2 style=" text-decoration:underline;"> <%- creator.CatContent.find(x => x.id === id).title %></h2> <br>
+  <p style="font-size:20px;">  <%- creator.CatContent.find(x => x.id === id).content %> </p>
 
   </body>
 </html>
