@@ -1,1 +1,1 @@
-web:node project.js
+
